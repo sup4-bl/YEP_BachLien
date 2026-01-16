@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Vote Tiết Mục{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>🎭 Vote Tiết Mục Yêu Thích</h1>
+    <div class="info">
+        <strong>{{ name }}</strong> - {{ department }}
+    </div>
+    <div class="warning">⚠️ Bạn không thể bình chọn cho tiết mục thuộc nhóm phòng ban của mình</div>
+    <div class="hint">✅ Bạn phải chọn <b>đúng 3</b> tiết mục để tiếp tục</div>
+    <div class="counter">Đã chọn: <span id="count">0</span>/3</div>
+
+    <form method="POST" id="form">
+        <div class="vote-grid">
+            {% for dept in departments %}
+            <div class="vote-card {% if dept in forbidden_options %}disabled{% endif %} {% if dept in existing_votes %}selected{% endif %}"
+                data-dept="{{ dept }}"
+                onclick="toggleSelect(this)">
+                {% if dept in forbidden_options %}
+                <span class="my-dept-badge">Không được vote</span>
+                {% endif %}
+                <div class="dept-content">
+                    <div class="dept-img">
+                        <img src="{{ images.get(dept, '/static/img/tietmuc/default.png') }}" alt="{{ dept }}">
+                    </div>
+                    <div class="dept-name">{{ dept }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div id="hiddenInputs"></div>
+        <button type="submit" id="submitBtn" disabled>Tiếp tục ➜</button>
+    </form>
+
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <div class="logout">
+        <a href="/logout">← Đăng xuất</a>
+    </div>
+</div>
+
+<script>
+const MAX = 3;
+
+// Initialize with existing votes
+window.addEventListener('DOMContentLoaded', function() {
+    updateUI();
+});
+
+function selectedCards() {
+    return Array.from(document.querySelectorAll('.vote-card.selected'));
+}
+
+function updateUI() {
+    const n = selectedCards().length;
+    document.getElementById('count').innerText = n;
+    document.getElementById('submitBtn').disabled = (n !== MAX);
+
+    const wrap = document.getElementById('hiddenInputs');
+    wrap.innerHTML = '';
+    selectedCards().forEach(card => {
+        const dept = card.getAttribute('data-dept');
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'votes';
+        input.value = dept;
+        wrap.appendChild(input);
+    });
+}
+
+function toggleSelect(card) {
+    if (card.classList.contains('disabled')) return;
+
+    const isSelected = card.classList.contains('selected');
+    if (isSelected) {
+        card.classList.remove('selected');
+        updateUI();
+        return;
+    }
+
+    const n = selectedCards().length;
+    if (n >= MAX) return;
+    
+    card.classList.add('selected');
+    updateUI();
+}
+</script>
+{% endblock %}

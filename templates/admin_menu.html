@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block body %}
+<div class="container admin-menu">
+    <div class="admin-header">
+        <div class="admin-title">
+            <h1>🎯 Admin Dashboard</h1>
+            <p class="subtitle">Chọn kết quả bạn muốn xem</p>
+        </div>
+        <div class="admin-actions">
+            <a href="/" class="btn-outline">← Trang đăng nhập</a>
+            <a href="/admin/logout" class="btn-danger">Đăng xuất</a>
+        </div>
+    </div>
+
+    <div class="menu-grid">
+        <a href="/admin/results/tiet-muc" class="menu-card">
+            <div class="icon">🎭</div>
+            <div class="title">Tiết Mục</div>
+            <div class="desc">Kết quả tiết mục (mỗi người chọn 1–3)</div>
+        </a>
+
+        <a href="/admin/results/king" class="menu-card">
+            <div class="icon">👑</div>
+            <div class="title">King</div>
+            <div class="desc">Kết quả vote King (1 người)</div>
+        </a>
+
+        <a href="/admin/results/queen" class="menu-card">
+            <div class="icon">👸</div>
+            <div class="title">Queen</div>
+            <div class="desc">Kết quả vote Queen (1 người)</div>
+        </a>
+    </div>
+</div>
+{% endblock %}

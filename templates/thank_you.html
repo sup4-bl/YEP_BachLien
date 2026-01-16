@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Cảm ơn!{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="thankyou-card">
+        <div class="thankyou-icon">🎉</div>
+        <h1>Hoàn thành bình chọn!</h1>
+        <p class="thankyou-text">Cảm ơn <strong>{{ name }}</strong> đã tham gia bình chọn <strong>YEP 2025</strong>.</p>
+        <p class="thankyou-note">Phiếu bình chọn của bạn đã được ghi nhận thành công.</p>
+        <a href="/" class="btn-primary">← Về trang chủ</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}Vote King{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="header">
+        <h1>👑 Vote King</h1>
+        <div class="info"><strong>{{ name }}</strong> - {{ department }}</div>
+        <div class="info">Chọn <b>1 nhân viên NAM</b> yêu thích để tiếp tục</div>
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: 66.66%;"></div>
+        </div>
+    </div>
+
+    <div class="people-toolbar">
+        <div class="filter-group">
+            <label for="deptFilter">Lọc phòng ban</label>
+            <select id="deptFilter">
+                <option value="all">Tất cả phòng ban</option>
+                {% for dept, _ in departments.items() %}
+                <option value="{{ dept }}">{{ dept }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="search-group">
+            <label for="nameSearch">Tìm nhanh</label>
+            <input id="nameSearch" type="text" placeholder="Nhập tên hoặc mã NV...">
+        </div>
+    </div>
+
+    <div class="selected-indicator" id="selectedInfo"></div>
+
+    <form method="POST">
+        <div class="people-grid" id="peopleGrid">
+            {% for dept, employees in departments.items() %}
+                {% for emp in employees %}
+                <button type="button"
+                        class="person-card {% if selected_username == emp.username %}selected{% endif %}"
+                        data-dept="{{ dept }}"
+                        data-name="{{ emp.name|lower }} {{ emp.username|lower }}"
+                        onclick="selectPerson(this, '{{ emp.username }}', '{{ emp.name }}')">
+                    <img class="avatar" src="{{ emp.photo }}" alt="{{ emp.name }}" onerror="this.onerror=null;this.src='{{ emp.fallback }}';">
+                    <div class="person-meta">
+                        <div class="person-name">{{ emp.name }}</div>
+                        <div class="person-sub">
+                            <span class="badge">{{ dept }}</span>
+                            <span class="code">{{ emp.username }}</span>
+                        </div>
+                    </div>
+                    <span class="tick" aria-hidden="true">✓</span>
+                </button>
+                {% endfor %}
+            {% endfor %}
+        </div>
+
+        <input type="hidden" name="vote" id="vote" value="{{ selected_username or '' }}" required>
+        
+        <div class="button-group">
+            <a href="/vote/back-to-tiet-muc" class="btn-back">← Quay lại</a>
+            <button type="submit" id="submitBtn" class="btn-primary" {% if not selected_username %}disabled{% endif %}>Tiếp tục</button>
+        </div>
+    </form>
+
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <div class="logout">
+        <a href="/logout">← Đăng xuất</a>
+    </div>
+</div>
+
+<script>
+// Auto-select if there's an existing vote
+window.addEventListener('DOMContentLoaded', function() {
+    const selectedUsername = '{{ selected_username or "" }}';
+    if (selectedUsername) {
+        const card = document.querySelector(`.person-card[onclick*="${selectedUsername}"]`);
+        if (card) {
+            updateSelectedInfo(selectedUsername, card.querySelector('.person-name').textContent);
+        }
+    }
+});
+
+function applyFilters() {
+    const dept = document.getElementById('deptFilter').value;
+    const kw = (document.getElementById('nameSearch').value || '').trim().toLowerCase();
+
+    document.querySelectorAll('.person-card').forEach(card => {
+        const okDept = (dept === 'all') || (card.dataset.dept === dept);
+        const okName = (!kw) || (card.dataset.name.includes(kw));
+        card.style.display = (okDept && okName) ? '' : 'none';
+    });
+}
+
+document.getElementById('deptFilter').addEventListener('change', applyFilters);
+document.getElementById('nameSearch').addEventListener('input', applyFilters);
+
+function selectPerson(card, username, name) {
+    document.querySelectorAll('.person-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+
+    document.getElementById('vote').value = username;
+    document.getElementById('submitBtn').disabled = false;
+
+    updateSelectedInfo(username, name);
+}
+
+function updateSelectedInfo(username, name) {
+    const indicator = document.getElementById('selectedInfo');
+    indicator.textContent = '✓ Đã chọn: ' + name;
+    indicator.classList.add('show');
+}
+</script>
+
+<style>
+.button-group {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 2px solid var(--border-color);
+    background: var(--bg-card);
+    color: var(--color-primary);
+    font-weight: 800;
+    text-decoration: none;
+    transition: all .12s ease;
+}
+
+.btn-back:hover {
+    background: var(--bg-soft);
+    border-color: var(--color-primary);
+    transform: translateY(-1px);
+    text-decoration: none;
+}
+
+@media (max-width: 640px) {
+    .button-group {
+        grid-template-columns: 1fr;
+    }
+    
+    .btn-back {
+        order: 2;
+    }
+}
+</style>
+{% endblock %}

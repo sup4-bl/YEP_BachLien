@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Kết quả {{ title }}{% endblock %}
+
+{% block body %}
+<div class="container admin-results {% if page_type == 'tiet_muc' %}admin-results-compact{% endif %}">
+    <div class="admin-header">
+        <div class="admin-title">
+            <h1>{{ icon }} {{ title }}</h1>
+            <p class="subtitle">Kết quả bình chọn YEP 2025</p>
+        </div>
+        <div class="admin-actions">
+            <a href="/admin/menu" class="btn-outline">← Menu</a>
+            <a href="/admin/logout" class="btn-danger">Đăng xuất</a>
+        </div>
+    </div>
+
+    {% if not has_any %}
+        <div class="empty-state">
+            <p>Chưa có kết quả bình chọn.</p>
+        </div>
+    {% else %}
+        {# Hint removed per requirement (keep dense-rank behaviour, just hide the note). #}
+
+        <div class="table-wrapper">
+            <table class="ranking-table">
+                <thead>
+                     <tr>
+                        <th class="col-rank">Hạng</th>
+                        <th>Tên</th>
+                        {% if show_department %}
+                        <th class="col-dept">Phòng ban</th>
+                        {% endif %}
+                        <th class="col-votes">Phiếu</th>
+                        <th class="col-bar">Tỷ lệ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                        {% for row in results %}
+                    <tr class="{% if row.rank == 1 %}rank-1{% elif row.rank == 2 %}rank-2{% elif row.rank == 3 %}rank-3{% endif %}">
+                        <td class="col-rank">
+                            <span class="rank-badge">#{{ row.rank }}</span>
+                        </td>
+
+                        <td class="col-name">
+                            <div class="name-cell">
+                                <span class="medal">
+                                    {% if row.rank == 1 %}🥇{% elif row.rank == 2 %}🥈{% elif row.rank == 3 %}🥉{% endif %}
+                                </span>
+                                <span class="name-text">{{ row.name }}</span>
+                            </div>
+                        </td>
+
+                        {% if show_department %}
+                        <td class="col-dept">{{ row.department }}</td>
+                        {% endif %}
+
+                        <td class="col-votes"><strong>{{ row.votes }}</strong></td>
+
+                        <td class="col-bar">
+                            <div class="bar">
+                                <div class="bar-fill"
+                                    style="width: {{ (row.votes / max_votes * 100) if max_votes else 0 }}%;">
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

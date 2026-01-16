@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Đăng nhập - YEP Voting{% endblock %}
+
+{% block body %}
+<div class="main-container">
+    <div class="login-section">
+        <h1>🎉 YEP Voting</h1>
+        <p class="subtitle">Đăng nhập để bình chọn</p>
+
+        <div class="info-box">
+            <strong>📌 Hướng dẫn:</strong><br>
+            - Chỉ cần nhập <strong>Mã nhân viên (MANV)</strong><br>
+            - Mỗi người chỉ vote được 1 lần
+        </div>
+
+        <form method="POST">
+            <div class="form-group">
+                <label>Tài khoản nhân viên:</label>
+                <input type="text" name="username" required placeholder="Nhập username (vd: nv176)" autocomplete="username">
+            </div>
+            <button type="submit">Đăng nhập</button>
+        </form>
+
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <div class="admin-link">
+            <a href="/admin">🔒 Đăng nhập Admin</a> | 
+            <a href="javascript:void(0)" onclick="openQRModal()">📱 Xem QR Code</a>
+        </div>
+    </div>
+</div>
+
+<!-- QR Code Modal -->
+<div id="qrModal" class="modal">
+    <div class="modal-content">
+        <h2>📱 QR Code Bình Chọn</h2>
+        <div class="qr-image" aria-label="QR Code">
+            <img src="{{ qr_code }}" alt="QR Code">
+        </div>
+        <p>Quét mã QR để truy cập và bình chọn ngay</p>
+        <button onclick="closeQRModal()" class="btn-close">Đóng</button>
+    </div>
+</div>
+
+<script>
+function openQRModal() {
+    document.getElementById('qrModal').style.display = 'flex';
+}
+function closeQRModal() {
+    document.getElementById('qrModal').style.display = 'none';
+}
+window.onclick = function(event) {
+    const modal = document.getElementById('qrModal');
+    if (event.target == modal) {
+        modal.style.display = 'none';
+    }
+}
+</script>
+{% endblock %}

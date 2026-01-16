@@ -1,0 +1,30 @@
+:root {
+  /* ===== VIETMRO BUSINESS TONE ===== */
+  --color-primary: #0F1F5C;        /* navy */
+  --color-primary-hover: #1F3C88;  /* navy hover */
+  --color-accent: #5DADE2;         /* light blue */
+
+  /* ===== BACKGROUND ===== */
+  --bg-body: #F4F6F9;
+  --bg-card: #FFFFFF;
+  --bg-soft: #EAF2FB;
+
+  /* ===== TEXT ===== */
+  --text-main: #111827;
+  --text-muted: #6B7280;
+  --text-white: #FFFFFF;
+
+  /* ===== BORDER & EFFECT ===== */
+  --border-color: #E5E7EB;
+  --radius: 14px;
+  --shadow-soft: 0 10px 28px rgba(17, 24, 39, 0.10);
+  --shadow-hover: 0 14px 36px rgba(17, 24, 39, 0.14);
+
+  /* ===== STATUS ===== */
+  --success: #16A34A;
+  --warning: #F59E0B;
+  --danger:  #DC2626;
+
+  /* ===== LAYOUT ===== */
+  --container-max: 1200px;
+}

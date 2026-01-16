@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Login{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="admin-login">
+        <div class="card admin-login-card">
+            <div class="admin-login-badge">🔒 Admin</div>
+            <h1>Đăng nhập quản trị</h1>
+            <p class="subtitle">Nhập mật khẩu để truy cập kết quả bình chọn</p>
+
+            <form method="POST" class="form">
+                <div class="form-group">
+                    <label>Mật khẩu Admin</label>
+                    <input type="password" name="password" placeholder="Nhập mật khẩu" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn-primary" style="width:100%;">Đăng nhập</button>
+            </form>
+
+            {% if error %}
+            <p class="error">{{ error }}</p>
+            {% endif %}
+
+            <div class="admin-back">
+                <a href="/">← Trở về trang đăng nhập</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
