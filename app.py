@@ -1,5 +1,7 @@
 # app.py - Main Flask Application with Back Navigation - FIXED VERSION
 from flask import Flask, render_template, request, session, redirect, url_for, g
+from flask_compress import Compress
+from flask_caching import Cache
 import secrets
 import qrcode
 from io import BytesIO
@@ -17,6 +19,27 @@ from config import (
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
+
+compress = Compress()
+compress.init_app(app)
+
+# ===== CACHING =====
+cache = Cache(app, config={
+    'CACHE_TYPE': 'simple',
+    'CACHE_DEFAULT_TIMEOUT': 300
+})
+
+# ===== STATIC FILE CACHING =====
+@app.after_request
+def add_cache_headers(response):
+    if request.path.startswith('/static/'):
+        if any(request.path.endswith(ext) for ext in ['.jpg', '.jpeg', '.png', '.webp', '.svg']):
+            response.cache_control.max_age = 604800  # 7 ngày
+            response.cache_control.public = True
+        elif any(request.path.endswith(ext) for ext in ['.css', '.js']):
+            response.cache_control.max_age = 86400  # 1 ngày
+            response.cache_control.public = True
+    return response
 
 # =========================
 # DATABASE FUNCTIONS
@@ -140,7 +163,7 @@ def generate_qr_png_data_uri(data: str) -> str:
     b64 = base64.b64encode(bio.getvalue()).decode("utf-8")
     return f"data:image/png;base64,{b64}"
 
-
+@cache.memoize(timeout=300)
 def _get_person_photo_url(username: str, default_svg_url: str) -> str:
     """
     Return photo URL if exists in static/img/people, otherwise default avatar SVG.
@@ -149,6 +172,7 @@ def _get_person_photo_url(username: str, default_svg_url: str) -> str:
     Instead, it always returns the expected path and lets the browser handle
     the fallback via onerror attribute in the HTML template.
     """
+    
     # List of possible extensions in priority order
     extensions = [
         ".jpg", ".JPG",      # JPEG images
