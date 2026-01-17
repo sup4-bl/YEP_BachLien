@@ -150,7 +150,12 @@ def _get_person_photo_url(username: str, default_svg_url: str) -> str:
     the fallback via onerror attribute in the HTML template.
     """
     # List of possible extensions in priority order
-    extensions = [".jpg", ".jpeg", ".png", ".webp"]
+    extensions = [
+        ".jpg", ".JPG",      # JPEG images
+        ".jpeg", ".JPEG",    # JPEG images (alternate extension)
+        ".png", ".PNG",      # PNG images
+        ".webp", ".WEBP"     # WebP images
+    ]
     
     # Check in-memory cache first (optional optimization)
     cache_key = f"photo_{username}"
