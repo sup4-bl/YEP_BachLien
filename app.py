@@ -1,4 +1,4 @@
-# app.py - Main Flask Application with Back Navigation
+# app.py - Main Flask Application with Back Navigation - FIXED VERSION
 from flask import Flask, render_template, request, session, redirect, url_for, g
 import secrets
 import qrcode
@@ -142,12 +142,46 @@ def generate_qr_png_data_uri(data: str) -> str:
 
 
 def _get_person_photo_url(username: str, default_svg_url: str) -> str:
-    """Return photo URL if exists in static/img/people, otherwise default avatar SVG."""
-    base = os.path.join(app.root_path, "static", "img", "people")
-    for ext in (".jpg", ".jpeg", ".png", ".webp"):
-        fn = username + ext
-        if os.path.exists(os.path.join(base, fn)):
-            return f"/static/img/people/{fn}"
+    """
+    Return photo URL if exists in static/img/people, otherwise default avatar SVG.
+    
+    FIX: This version doesn't check file existence on server.
+    Instead, it always returns the expected path and lets the browser handle
+    the fallback via onerror attribute in the HTML template.
+    """
+    # List of possible extensions in priority order
+    extensions = [".jpg", ".jpeg", ".png", ".webp"]
+    
+    # Check in-memory cache first (optional optimization)
+    cache_key = f"photo_{username}"
+    if hasattr(app, '_photo_cache') and cache_key in app._photo_cache:
+        return app._photo_cache[cache_key]
+    
+    # Try to find the file
+    base_path = os.path.join(app.root_path, "static", "img", "people")
+    
+    # Create cache if not exists
+    if not hasattr(app, '_photo_cache'):
+        app._photo_cache = {}
+    
+    # Check if directory exists
+    if os.path.exists(base_path):
+        for ext in extensions:
+            filename = username + ext
+            full_path = os.path.join(base_path, filename)
+            if os.path.exists(full_path):
+                photo_url = f"/static/img/people/{filename}"
+                app._photo_cache[cache_key] = photo_url
+                return photo_url
+    
+    # If not found locally, still try the URL path
+    # The onerror in template will handle missing files
+    for ext in extensions:
+        photo_url = f"/static/img/people/{username}{ext}"
+        # Don't cache the default, in case file is added later
+        return photo_url
+    
+    # Fallback to default avatar
     return default_svg_url
 
 def dense_rank(items):
@@ -250,35 +284,32 @@ def vote_tiet_muc():
     if "username" not in session:
         return redirect(url_for("login"))
 
-    # Block if already completed
+    # Block if already completed all voting
     if user_has_voted(session["username"]):
         return redirect(url_for("login"))
-    
+
     error = None
     user_dept = session["department"]
     forbidden = get_forbidden_tiet_muc_for_department(user_dept)
-    
-    # Show ALL options
-    visible_options = TIET_MUC_OPTIONS
-    
-    # Load existing votes if any
+    visible_options = [opt for opt in TIET_MUC_OPTIONS if opt not in forbidden]
+
+    # Load existing votes from database
     existing_votes = get_user_votes(session["username"], "tiet_muc")
-    
+
     if request.method == "POST":
-        selected = request.form.getlist("votes")
-        selected = list(dict.fromkeys([s.strip() for s in selected if s.strip()]))
+        votes = request.form.getlist("votes")
         
-        if len(selected) != 3:
-            error = "Bạn phải chọn đúng 3 tiết mục để tiếp tục."
-        elif any(x in forbidden for x in selected):
-            error = "Bạn không thể bình chọn cho tiết mục thuộc nhóm phòng ban của mình."
-        elif not all(x in TIET_MUC_SET for x in selected):
-            error = "Lựa chọn không hợp lệ."
+        if len(votes) != 3:
+            error = "Bạn phải chọn đúng 3 tiết mục."
         else:
-            save_tiet_muc_votes(session["username"], selected)
-            session["tiet_muc_done"] = True
-            return redirect(url_for("vote_king"))
-    
+            invalid = [v for v in votes if v not in TIET_MUC_SET or v in forbidden]
+            if invalid:
+                error = "Có tiết mục không hợp lệ hoặc bạn không được vote."
+            else:
+                save_tiet_muc_votes(session["username"], votes)
+                session["tiet_muc_done"] = True
+                return redirect(url_for("vote_king"))
+
     return render_template(
         "vote_tiet_muc.html",
         name=session["name"],

@@ -129,14 +129,14 @@ NHAN_VIEN = {
 
 # Tiết mục options - CẬP NHẬT MỚI (8 tiết mục)
 TIET_MUC_OPTIONS = [
-    "KHO VẬN - Bách Liên ký",
-    "KINH DOANH 2 - Brother Louie",
-    "ĐẠI HỌC TỔNG HỢP - Tiếng khèn cùng chiếc khăn piêu",
-    "KỸ THUẬT DỊCH VỤ - Hát vui tươi",
-    "LIÊN ĐOÀN KINH DOANH - Hồn xưa khí mới",
-    "KẾ TOÁN - Rạng Ngời Niềm Tin",
-    "MUA HÀNG - Từ Linh Thiêng Đến Phong Trần",
-    "KINH DOANH 3 - Lô Tô Bách Niên Show",
+    "KHO VẬN - BÁCH LIÊN KÝ",
+    "KINH DOANH 2 - BROTHER LOUIE",
+    "ĐẠI HỌC TỔNG HỢP - TIẾNG KHÈN CÙNG CHIẾC KHĂN PIÊU",
+    "KỸ THUẬT DỊCH VỤ - HÁT VUI TƯƠI",
+    "LIÊN ĐOÀN KINH DOANH - HÔN XƯA KHÍ MỚI",
+    "KẾ TOÁN - RANG NGỜI NIỀM TIN",
+    "MUA HÀNG - TỪ LINH THIÊNG ĐẾN PHONG TRẦN",
+    "KINH DOANH 3 - Lô TÔ BÁCH NIÊN SHOW",
 ]
 
 # KHÔNG CẦN HÌNH ẢNH NỮA - BỎ DICT NÀY
