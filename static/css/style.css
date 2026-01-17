@@ -485,83 +485,130 @@ input[type="text"]:focus,input[type="password"]:focus,select:focus{
 .hint{border-color: rgba(22,163,74,.28); background: rgba(22,163,74,.06); color: #14532D}
 .counter{color: var(--text-muted)}
 
-/* Grid cards - Responsive từ đầu */
+/* Grid cards - Thiết kế mới đẹp hơn */
 .vote-grid{
   display:grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
   margin: 16px 0 18px;
 }
 
 .vote-card{
   position: relative;
   background: var(--bg-card);
-  border: 2px solid var(--border-color);
-  border-radius: 18px;
-  padding: 16px;
-  box-shadow: var(--shadow-soft);
+  border: 2.5px solid var(--border-color);
+  border-radius: 14px;
+  padding: 26px 20px;
+  box-shadow: 0 2px 8px rgba(15,31,92,.08);
   cursor: pointer;
-  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
-  min-height: 100px;
+  transition: all .25s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .vote-card:hover{
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-hover);
-  border-color: rgba(93,173,226,.55);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(15,31,92,.12);
+  border-color: rgba(93,173,226,.5);
 }
 
 .vote-card.selected{
-  border-color: rgba(93,173,226,.95);
+  border-color: var(--color-primary);
   border-width: 3px;
-  box-shadow: 0 0 0 4px rgba(93,173,226,.20), var(--shadow-hover);
-  background: linear-gradient(180deg, rgba(93,173,226,.10), rgba(255,255,255,1));
+  box-shadow: 0 0 0 4px rgba(93,173,226,.2), 0 8px 16px rgba(15,31,92,.15);
+  background: linear-gradient(135deg, rgba(93,173,226,.05) 0%, rgba(255,255,255,1) 100%);
+  transform: translateY(-2px);
+}
+
+.vote-card.selected::before{
+  content: '✓';
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 24px;
+  height: 24px;
+  background: var(--color-primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 900;
+  box-shadow: 0 2px 8px rgba(15,31,92,.2);
 }
 
 .vote-card.disabled{
-  opacity: .55;
+  opacity: .5;
   cursor: not-allowed;
+  background: #F9FAFB;
+}
+
+.vote-card.disabled:hover{
+  transform: none;
+  box-shadow: 0 2px 8px rgba(15,31,92,.08);
+  border-color: var(--border-color);
 }
 
 .my-dept-badge{
   position:absolute;
-  top: 12px;
-  right: 12px;
-  background: rgba(220,38,38,.10);
+  top: 10px;
+  right: 10px;
+  background: linear-gradient(135deg, rgba(239,68,68,.15) 0%, rgba(239,68,68,.08) 100%);
   color: #991B1B;
-  border: 1px solid rgba(220,38,38,.22);
-  border-radius: 999px;
-  font-weight: 900;
-  font-size: 10px;
-  padding: 5px 10px;
+  border: 1.5px solid rgba(239,68,68,.35);
+  border-radius: 6px;
+  font-weight: 800;
+  font-size: 9.5px;
+  padding: 4px 9px;
   z-index: 2;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  box-shadow: 0 2px 4px rgba(239,68,68,.1);
 }
 
+/* VOTE CARD CONTENT - Format 2 dòng với typography đẹp hơn */
 .dept-content{
-  display:flex; 
-  align-items:center; 
-  gap: 14px;
-  min-height: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
 }
 
-.dept-img{
-  width: 70px;
-  height: 70px;
-  border-radius: 16px;
-  overflow:hidden;
-  background: var(--bg-soft);
-  border: 1px solid rgba(15,31,92,.10);
-  flex: 0 0 auto;
-}
-
-.dept-img img{width:100%;height:100%;object-fit:cover;display:block}
-
-.dept-name{
+.dept-header{
   font-weight: 900;
   color: var(--color-primary);
-  line-height: 1.3;
-  font-size: 15px;
-  flex: 1;
+  font-size: 16px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  line-height: 1.25;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+.dept-subtitle{
+  font-weight: 600;
+  color: #475569;
+  font-size: 20px;
+  text-align: center;
+  line-height: 1.45;
+  text-transform: capitalize;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  max-width: 90%;
+}
+
+.vote-card.selected .dept-header{
+  color: var(--color-primary);
+  text-shadow: 0 1px 2px rgba(15,31,92,0.1);
+}
+
+.vote-card.selected .dept-subtitle{
+  color: var(--color-primary);
+  font-weight: 700;
 }
 
 /* old classes kept for compatibility */
@@ -682,35 +729,52 @@ tr.rank-3{background: rgba(93,173,226,.04)}
   .col-bar{width: 120px}
 }
 
-@media (max-width: 640px){
-  /* Vote tiết mục - Stack cards vertically on mobile */
+@media (min-width: 641px) and (max-width: 900px){
+  /* Tablet - vẫn giữ 2 cột nhưng card nhỏ hơn */
   .vote-grid{
-    grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 14px;
   }
   
   .vote-card{
-    padding: 14px;
+    padding: 24px 18px;
+    min-height: 115px;
   }
   
-  .dept-content{
-    gap: 12px;
+  .dept-header{
+    font-size: 15px;
+    letter-spacing: 0.6px;
   }
   
-  .dept-img{
-    width: 60px;
-    height: 60px;
+  .dept-subtitle{
+    font-size: 12.5px;
+  }
+}
+
+@media (max-width: 640px){
+  /* Vote tiết mục - 1 cột trên mobile */
+  .vote-grid{
+    grid-template-columns: 1fr;
+    gap: 14px;
   }
   
-  .dept-name{
-    font-size: 14px;
+  .vote-card{
+    padding: 22px 18px;
+    min-height: 115px;
+  }
+  
+  .dept-header{
+    font-size: 13.5px;
+  }
+  
+  .dept-subtitle{
+    font-size: 12.5px;
   }
   
   .my-dept-badge{
-    top: 10px;
-    right: 10px;
+    top: 8px;
+    right: 8px;
     font-size: 9px;
-    padding: 4px 8px;
+    padding: 3px 7px;
   }
   
   /* Admin menu cards */

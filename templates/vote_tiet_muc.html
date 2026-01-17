@@ -22,10 +22,11 @@
                 <span class="my-dept-badge">Không được vote</span>
                 {% endif %}
                 <div class="dept-content">
-                    <div class="dept-img">
-                        <img src="{{ images.get(dept, '/static/img/tietmuc/default.png') }}" alt="{{ dept }}">
-                    </div>
-                    <div class="dept-name">{{ dept }}</div>
+                    {% set parts = dept.split(' - ', 1) %}
+                    <div class="dept-header">{{ parts[0] }}</div>
+                    {% if parts|length > 1 %}
+                    <div class="dept-subtitle">{{ parts[1] }}</div>
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}

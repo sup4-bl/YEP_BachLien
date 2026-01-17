@@ -127,18 +127,16 @@ NHAN_VIEN = {
     "nv267": {"password": "123", "name": "Nguyễn Văn Đạt", "department": "CÔNG NGHỆ"},
 }
 
-# Tiết mục options - CẬP NHẬT MỚI
+# Tiết mục options - CẬP NHẬT MỚI (8 tiết mục)
 TIET_MUC_OPTIONS = [
-    "ĐỘI 1 - KD3 - Giai điệu Việt nam mình",
     "KHO VẬN - Bách Liên ký",
-    "ĐỘI 1 - KD2 - Brother Louie",
+    "KINH DOANH 2 - Brother Louie",
     "ĐẠI HỌC TỔNG HỢP - Tiếng khèn cùng chiếc khăn piêu",
     "KỸ THUẬT DỊCH VỤ - Hát vui tươi",
     "LIÊN ĐOÀN KINH DOANH - Hồn xưa khí mới",
     "KẾ TOÁN - Rạng Ngời Niềm Tin",
-    "ĐỘI 2 - KD2 - Gió đánh đò đưa",
     "MUA HÀNG - Từ Linh Thiêng Đến Phong Trần",
-    "ĐỘI 1 - KD3 - Lô Tô Bách Niên Show",
+    "KINH DOANH 3 - Lô Tô Bách Niên Show",
 ]
 
 # KHÔNG CẦN HÌNH ẢNH NỮA - BỎ DICT NÀY
@@ -199,19 +197,13 @@ def get_forbidden_tiet_muc_for_department(dept: str) -> set:
     if d in ("CÔNG NGHỆ", "MARKETING", "KINH DOANH SALES NỘI BỘ", "HÀNH CHÍNH - NHÂN SỰ"):
         return {"ĐẠI HỌC TỔNG HỢP - Tiếng khèn cùng chiếc khăn piêu"}
     
-    # KINH DOANH 2 → Không được vote CẢ 2 tiết mục của KD2
+    # KINH DOANH 2 → Không được vote tiết mục của KD2
     if d == "KINH DOANH 2":
-        return {
-            "ĐỘI 1 - KD2 - Brother Louie",
-            "ĐỘI 2 - KD2 - Gió đánh đò đưa"
-        }
+        return {"KINH DOANH 2 - Brother Louie"}
     
-    # KINH DOANH 3 → Không được vote CẢ 2 tiết mục của KD3
+    # KINH DOANH 3 → Không được vote tiết mục của KD3
     if d == "KINH DOANH 3":
-        return {
-            "ĐỘI 1 - KD3 - Giai điệu Việt nam mình",
-            "ĐỘI 1 - KD3 - Lô Tô Bách Niên Show"
-        }
+        return {"KINH DOANH 3 - Lô Tô Bách Niên Show"}
     
     # KHO VẬN
     if d == "KHO VẬN":
