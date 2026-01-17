@@ -180,12 +180,7 @@ def _get_person_photo_url(username: str, default_svg_url: str) -> str:
                 return photo_url
     
     # If not found locally, still try the URL path
-    # The onerror in template will handle missing files
-    for ext in extensions:
-        photo_url = f"/static/img/people/{username}{ext}"
-        # Don't cache the default, in case file is added later
-        return photo_url
-    
+    # The onerror in template will handle missing files 
     # Fallback to default avatar
     return default_svg_url
 
@@ -418,6 +413,19 @@ def vote_queen():
     existing_vote = get_user_votes(session["username"], "queen")
     selected_username = existing_vote[0] if existing_vote else None
     
+    # ===== THÊM PHẦN NÀY: Lấy thông tin Tiết Mục và King =====
+    # Lấy danh sách Tiết Mục đã vote
+    tiet_muc_votes = get_user_votes(session["username"], "tiet_muc")
+    
+    # Lấy King đã vote và tìm tên
+    king_votes = get_user_votes(session["username"], "king")
+    king_vote_name = None
+    if king_votes:
+        king_username = king_votes[0]
+        if king_username in NHAN_VIEN:
+            king_vote_name = f"{NHAN_VIEN[king_username]['name']} ({king_username})"
+    # ========================================================
+    
     if request.method == "POST":
         vote_username = (request.form.get("vote") or "").strip().lower()
         
@@ -440,9 +448,11 @@ def vote_queen():
         departments=departments,
         selected_username=selected_username,
         can_go_back=True,
+        tiet_muc_votes=tiet_muc_votes,  # ← THÊM
+        king_vote_name=king_vote_name,   # ← THÊM
         error=error,
     )
-
+    
 @app.route("/vote/back-to-tiet-muc")
 def back_to_tiet_muc():
     if "username" not in session:

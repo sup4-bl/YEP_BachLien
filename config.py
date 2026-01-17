@@ -1,4 +1,4 @@
-# config.py - Configuration và Data
+# config.py - Configuration và Data - FIXED VERSION
 import os
 
 # Admin Password
@@ -133,10 +133,10 @@ TIET_MUC_OPTIONS = [
     "KINH DOANH 2 - BROTHER LOUIE",
     "ĐẠI HỌC TỔNG HỢP - TIẾNG KHÈN CÙNG CHIẾC KHĂN PIÊU",
     "KỸ THUẬT DỊCH VỤ - HÁT VUI TƯƠI",
-    "LIÊN ĐOÀN KINH DOANH - HÔN XƯA KHÍ MỚI",
-    "KẾ TOÁN - RANG NGỜI NIỀM TIN",
+    "LIÊN ĐOÀN KINH DOANH - HỒN XƯA KHÍ MỚI",
+    "KẾ TOÁN - RẠNG NGỜI NIỀM TIN",
     "MUA HÀNG - TỪ LINH THIÊNG ĐẾN PHONG TRẦN",
-    "KINH DOANH 3 - Lô TÔ BÁCH NIÊN SHOW",
+    "KINH DOANH 3 - LÔ TÔ BÁCH NIÊN SHOW",
 ]
 
 # KHÔNG CẦN HÌNH ẢNH NỮA - BỎ DICT NÀY
@@ -186,50 +186,37 @@ def get_kings_and_queens():
     return kings_depts, queens_depts
 
 def get_forbidden_tiet_muc_for_department(dept: str) -> set:
-    """Trả về tập các tiết mục mà user KHÔNG ĐƯỢC vote"""
     d = (dept or "").strip().upper()
-    
-    # KINH DOANH 1, 4, 6 → Không được vote "LIÊN ĐOÀN KINH DOANH"
+
+    if d == "CÔNG NGHỆ":
+        return {"ĐẠI HỌC TỔNG HỢP - TIẾNG KHÈN CÙNG CHIẾC KHĂN PIÊU"}
+
     if d in ("KINH DOANH 1", "KINH DOANH 4", "KINH DOANH 6"):
-        return {"LIÊN ĐOÀN KINH DOANH - Hồn xưa khí mới"}
-    
-    # CÔNG NGHỆ, MKT, KSNB, HCNS → Không được vote "ĐẠI HỌC TỔNG HỢP"
-    if d in ("CÔNG NGHỆ", "MARKETING", "KINH DOANH SALES NỘI BỘ", "HÀNH CHÍNH - NHÂN SỰ"):
-        return {"ĐẠI HỌC TỔNG HỢP - Tiếng khèn cùng chiếc khăn piêu"}
-    
-    # KINH DOANH 2 → Không được vote tiết mục của KD2
+        return {"LIÊN ĐOÀN KINH DOANH - HỒN XƯA KHÍ MỚI"}
+
+    if d in ("MUA HÀNG", "XUẤT NHẬP KHẨU"):
+        return {"MUA HÀNG - TỪ LINH THIÊNG ĐẾN PHONG TRẦN"}
+
     if d == "KINH DOANH 2":
-        return {"KINH DOANH 2 - Brother Louie"}
-    
-    # KINH DOANH 3 → Không được vote tiết mục của KD3
+        return {"KINH DOANH 2 - BROTHER LOUIE"}
+
     if d == "KINH DOANH 3":
-        return {"KINH DOANH 3 - Lô Tô Bách Niên Show"}
-    
-    # KHO VẬN
+        return {"KINH DOANH 3 - LÔ TÔ BÁCH NIÊN SHOW"}
+
     if d == "KHO VẬN":
-        return {"KHO VẬN - Bách Liên ký"}
-    
-    # KẾ TOÁN
+        return {"KHO VẬN - BÁCH LIÊN KÝ"}
+
     if d == "KẾ TOÁN":
-        return {"KẾ TOÁN - Rạng Ngời Niềm Tin"}
-    
-    # DỊCH VỤ KỸ THUẬT
+        return {"KẾ TOÁN - RẠNG NGỜI NIỀM TIN"}
+
     if d == "DỊCH VỤ KỸ THUẬT":
-        return {"KỸ THUẬT DỊCH VỤ - Hát vui tươi"}
-    
-    # MUA HÀNG
-    if d == "MUA HÀNG":
-        return {"MUA HÀNG - Từ Linh Thiêng Đến Phong Trần"}
-    
-    # BAN GIÁM ĐỐC - Không bị chặn gì
+        return {"KỸ THUẬT DỊCH VỤ - HÁT VUI TƯƠI"}
+
     if d == "BAN GIÁM ĐỐC":
         return set()
-    
-    # XUẤT NHẬP KHẨU - Không có tiết mục riêng nên không bị chặn
-    if d == "XUẤT NHẬP KHẨU":
-        return set()
-    
+
     return set()
+
 
 PHONG_BAN = get_departments()
 KINGS_PHONG_BAN, QUEENS_PHONG_BAN = get_kings_and_queens()

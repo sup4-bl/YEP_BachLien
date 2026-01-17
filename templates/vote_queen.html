@@ -7,7 +7,7 @@
     <div class="header">
         <h1>👸 Vote Queen</h1>
         <div class="info"><strong>{{ name }}</strong> - {{ department }}</div>
-        <div class="info">Chọn <b>1 nhân viên NỮ</b> yêu thích để hoàn thành</div>
+        <div class="info">Chọn <b>1 nhân viên Nữ</b> yêu thích để hoàn thành</div>
         <div class="progress-bar">
             <div class="progress-fill" style="width: 100%;"></div>
         </div>
@@ -55,6 +55,10 @@
         </div>
 
         <input type="hidden" name="vote" id="vote" value="{{ selected_username or '' }}" required>
+        
+        <!-- Hidden fields to pass vote data to JavaScript -->
+        <input type="hidden" id="tietMucVotes" value="{{ tiet_muc_votes|join(', ') if tiet_muc_votes else '' }}">
+        <input type="hidden" id="kingVote" value="{{ king_vote_name or '' }}">
         
         <div class="button-group">
             <a href="/vote/back-to-king" class="btn-back">← Quay lại</a>
@@ -116,14 +120,44 @@ function updateSelectedInfo(username, name) {
 }
 
 function confirmSubmit() {
-    const selectedName = document.querySelector('.person-card.selected .person-name');
-    if (!selectedName) return false;
+    const selectedCard = document.querySelector('.person-card.selected');
+    if (!selectedCard) return false;
     
-    return confirm(
-        '🎉 Xác nhận hoàn thành bình chọn?\n\n' +
-        'Queen: ' + selectedName.textContent + '\n\n' +
-        '⚠️ Sau khi hoàn thành, bạn KHÔNG THỂ sửa đổi lại!'
-    );
+    const selectedName = selectedCard.querySelector('.person-name').textContent.trim();
+    const selectedCode = selectedCard.querySelector('.code').textContent.trim();
+    
+    // Lấy thông tin các phần đã vote
+    const tietMucVotes = document.getElementById('tietMucVotes').value;
+    const kingVote = document.getElementById('kingVote').value;
+    const queenVote = `${selectedName} (${selectedCode})`;
+    
+    // Tạo message hiển thị đầy đủ
+    let message = '🎉 XÁC NHẬN HOÀN THÀNH BÌNH CHỌN\n';
+    message += '═══════════════════════════════\n\n';
+    
+    // Tiết mục
+    if (tietMucVotes) {
+        message += '🎭 TIẾT MỤC (3 lựa chọn):\n';
+        const items = tietMucVotes.split(', ');
+        items.forEach((item, index) => {
+            message += `   ${index + 1}. ${item}\n`;
+        });
+        message += '\n';
+    }
+    
+    // King
+    if (kingVote) {
+        message += `👑 KING:\n   ${kingVote}\n\n`;
+    }
+    
+    // Queen
+    message += `👸 QUEEN:\n   ${queenVote}\n\n`;
+    
+    message += '═══════════════════════════════\n';
+    message += '⚠️ Sau khi hoàn thành, bạn KHÔNG THỂ sửa đổi!\n\n';
+    message += 'Bạn có chắc chắn muốn hoàn thành?';
+    
+    return confirm(message);
 }
 </script>
 
